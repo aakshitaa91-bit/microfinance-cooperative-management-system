@@ -1,520 +1,201 @@
 # Microfinance and Cooperative Society Management System
 
-A full-stack database management application designed to manage members, cooperative societies, groups, savings accounts, loans, funds, repayments, staff, and related information in a centralized system.
-
-The project provides a web-based frontend connected to a Java Spring Boot backend using JDBC, with MySQL as the database.
-
----
-
-## Project Overview
-
-The Microfinance and Cooperative Society Management System is designed to digitally manage the major operations of a cooperative society and microfinance organization.
-
-The system allows administrators to:
-
-- Manage cooperative society members
-- Manage cooperative societies
-- Manage village/area information
-- Manage staff
-- Manage funds
-- Manage member phone numbers
-- Manage memberships
-- Manage cooperative groups
-- Manage group membership
-- Manage savings accounts
-- Manage loans
-- Manage loan-fund relationships
-- Manage staff phone numbers
-- Manage loan repayments
-- View an overall dashboard with database statistics
-
-The system follows a structured relational database design with primary keys, foreign keys, composite keys, and many-to-many relationship tables.
-
----
-
-# Key Features
-
-## 1. Dashboard
-
-The dashboard provides an overview of the system using summary cards.
-
-It displays counts for important entities such as:
-
-- Members
-- Cooperative Societies
-- Village Areas
-- Staff
-- Funds
-- Cooperative Groups
-- Savings Accounts
-- Loans
-- Repayments
-
-The dashboard also provides quick navigation to the major management modules.
-
----
-
-# Member Management
-
-The Member Management module is used to maintain member information.
-
-### Functionalities
-
-- Add a new member
-- View all members
-- Edit existing member information
-- Delete a member
-- Search/view member records
-- Validate required fields
-- Prevent duplicate Member IDs through database constraints
-
-### Member information includes
-
-- Member ID
-- Name
-- Date of Birth
-- House Number
-- Street
-- City
-- State
-- PIN
-
----
-
-# Cooperative Society Management
-
-This module manages cooperative society information.
-
-### Functionalities
-
-- Add cooperative society
-- View cooperative societies
-- Edit society details
-- Delete society
-- Validate required fields
-
-### Society information includes
-
-- Society ID
-- Society Name
-- Registration Date
-- Street
-- City
-- State
-- PIN
-
----
-
-# Village Area Management
-
-This module manages the geographical areas associated with cooperative groups.
-
-### Functionalities
-
-- Add village/area
-- View village areas
-- Edit village/area information
-- Delete village/area
-- Validate required fields
-
-### Information includes
-
-- Village Area
-- PIN
-
----
-
-# Staff Management
-
-This module maintains staff information.
-
-### Functionalities
-
-- Add staff member
-- View staff
-- Edit staff details
-- Delete staff
-- Manage staff designation
-- Validate required fields
-
-### Staff information includes
-
-- Staff ID
-- Name
-- Designation
-- Street
-- City
-- State
-- PIN
-
----
-
-# Fund Management
-
-The Fund Management module manages financial funds available within the system.
-
-### Functionalities
-
-- Add fund
-- View funds
-- Edit fund information
-- Delete fund
-- Manage fund type
-- Manage total fund amount
-
-### Fund information includes
-
-- Fund ID
-- Fund Type
-- Total Amount
-
----
-
-# Member Phone Management
-
-Members can have multiple phone numbers.
-
-This module manages member phone records.
-
-### Functionalities
-
-- Add member phone number
-- View phone numbers
-- Edit phone number
-- Delete phone number
-
-The table uses a composite primary key:
-
-`MemberID + PhoneNo`
-
-This allows a member to have multiple phone numbers while maintaining uniqueness.
-
----
-
-# Membership Management
-
-The Membership module represents the relationship between members and cooperative societies.
-
-A member can belong to multiple societies, and a society can have multiple members.
-
-Therefore, this is a:
-
-**Many-to-Many (M:N) relationship**
-
-implemented using the `MEMBERSHIP` table.
-
-### Functionalities
-
-- Add member-society membership
-- View memberships
-- Edit membership
-- Delete membership
-
-### Composite Primary Key
-
-`MemberID + SocietyID`
-
----
-
-# Cooperative Group Management
-
-This module manages groups formed under cooperative societies.
-
-### Functionalities
-
-- Add cooperative group
-- View groups
-- Edit group information
-- Delete group
-- Associate group with a cooperative society
-- Associate group with a village area
-
-### Relationships
-
-A cooperative society can have multiple groups.
-
-A village area can be associated with multiple groups.
-
----
-
-# Member Group Management
-
-This module manages the relationship between members and cooperative groups.
-
-A member can belong to multiple groups, and a group can contain multiple members.
-
-Therefore, this is another:
-
-**Many-to-Many (M:N) relationship**
-
-implemented using the `MEMBER_GROUP` table.
-
-### Functionalities
-
-- Add member to group
-- View member-group relationships
-- Edit relationship
-- Delete relationship
-
-### Composite Primary Key
-
-`MemberID + GroupID`
-
----
-
-# 🏦 Savings Account Management
-
-This module manages savings accounts belonging to members.
-
-### Functionalities
-
-- Create savings account
-- View savings accounts
-- Edit account information
-- Delete savings account
-- Associate an account with a member
-- Assign a nominee
-
-### Savings Account information
-
-- Account Number
-- Member ID
-- Opening Date
-- Account Type
-- Nominee ID
-
-The system uses member references for both the account owner and nominee.
-
----
-
-# Loan Management
-
-The Loan Management module manages loans issued to members.
-
-### Functionalities
-
-- Add loan
-- View loans
-- Edit loan information
-- Delete loan
-- Associate a loan with a member
-- Manage loan details
-
-Loans are connected to members using a foreign key.
-
----
-
-# Loan Fund Management
-
-A loan can be associated with multiple funds, and a fund can support multiple loans.
-
-Therefore, this module represents a:
-
-**Many-to-Many (M:N) relationship**
-
-between loans and funds.
-
-The relationship is implemented using the `LOAN_FUND` table.
-
-### Functionalities
-
-- Associate loan with fund
-- View loan-fund relationships
-- Edit relationship
-- Delete relationship
-
-### Composite Primary Key
-
-`LoanID + FundID`
-
----
-
-# Staff Phone Management
-
-Staff members may have multiple phone numbers.
-
-This module manages staff phone records.
-
-### Functionalities
-
-- Add staff phone number
-- View staff phone numbers
-- Edit phone number
-- Delete phone number
-
-### Composite Primary Key
-
-`StaffID + PhoneNo`
-
----
-
-# Repayment Management
-
-The Repayment module records repayments made against loans.
-
-### Functionalities
-
-- Add repayment
-- View repayments
-- Edit repayment
-- Delete repayment
-- Associate repayments with loans
-
-A loan can have multiple repayments.
-
-The repayment table uses a composite key:
-
-`LoanID + RepaymentNo`
-
----
-
-# Database Design
-
-The project uses a relational MySQL database named:
-
-`cooperative_db`
-
-The database contains 14 tables.
-
-| No. | Table | Purpose |
-|---|---|---|
-| 1 | MEMBER | Stores member information |
-| 2 | COOPERATIVE_SOCIETY | Stores cooperative society information |
-| 3 | VILLAGE_AREA | Stores village/area information |
-| 4 | STAFF | Stores staff information |
-| 5 | FUND | Stores financial fund information |
-| 6 | MEMBER_PHONE | Stores member phone numbers |
-| 7 | MEMBERSHIP | Connects members and societies |
-| 8 | COOPERATIVE_GROUP | Stores cooperative groups |
-| 9 | MEMBER_GROUP | Connects members and groups |
-| 10 | SAVINGS_ACCOUNT | Stores savings accounts |
-| 11 | LOAN | Stores member loan information |
-| 12 | LOAN_FUND | Connects loans and funds |
-| 13 | STAFF_PHONE | Stores staff phone numbers |
-| 14 | REPAYMENT | Stores loan repayment information |
-
----
-
-# Database Relationships
-
-The database uses primary-key and foreign-key relationships to maintain referential integrity.
-
-### Major relationships
-
-- MEMBER → MEMBER_PHONE
-- MEMBER ↔ COOPERATIVE_SOCIETY through MEMBERSHIP
-- COOPERATIVE_SOCIETY → COOPERATIVE_GROUP
-- VILLAGE_AREA → COOPERATIVE_GROUP
-- MEMBER ↔ COOPERATIVE_GROUP through MEMBER_GROUP
-- MEMBER → SAVINGS_ACCOUNT
-- MEMBER → LOAN
-- MEMBER → SAVINGS_ACCOUNT as nominee
-- LOAN ↔ FUND through LOAN_FUND
-- LOAN → REPAYMENT
-- STAFF → STAFF_PHONE
-
----
-
-# Keys and Constraints
-
-The database uses:
-
-### Primary Keys
-
-Primary keys uniquely identify records in each table.
-
-Examples:
-
-- MemberID
-- SocietyID
-- StaffID
-- FundID
-- GroupID
-- AccountNo
-- LoanID
-
-### Composite Primary Keys
-
-Composite keys are used where relationships require more than one attribute.
-
-Examples:
-
-- `(MemberID, PhoneNo)`
-- `(MemberID, SocietyID)`
-- `(MemberID, GroupID)`
-- `(LoanID, FundID)`
-- `(StaffID, PhoneNo)`
-- `(LoanID, RepaymentNo)`
-
-### Foreign Keys
-
-Foreign keys connect related tables and maintain referential integrity.
-
-For example:
-
-`LOAN.MemberID → MEMBER.MemberID`
-
----
-
-# Frontend
-
-The frontend is built using:
-
-- React
-- Vite
-- JavaScript
-- HTML
-- CSS
-
-The frontend provides a tab-based management interface.
-
-Each database entity has its own management interface where users can perform CRUD operations.
-
----
-
-# Backend
-
-The backend is built using:
-
-- Java
-- Spring Boot
-- Maven
-- JDBC
-
-The backend exposes REST API endpoints for communication between the frontend and MySQL database.
-
-The backend follows a layered structure containing:
-
-- Models
-- DAOs
-- Controllers
-
-JDBC is used for direct database interaction.
-
----
-
-# System Architecture
-
-The application follows this architecture:
-
+## 1. Project Title
+Microfinance and Cooperative Society Management System
+
+## 2. Project Overview
+This project is a comprehensive database management system designed to digitize and manage the core operations of a microfinance and cooperative society. It provides a robust, text-based academic interface for efficiently managing members, cooperative societies, funds, loan distributions, and savings accounts.
+
+## 3. Project Objectives
+- To digitize manual cooperative society and microfinance operations.
+- To demonstrate a robust relational database design with complex relationships (One-to-Many, Many-to-Many, and Weak Entities).
+- To provide a text-focused, professional, and accessible user interface for seamless data entry and management.
+- To maintain absolute data consistency and referential integrity using strict SQL constraints and JDBC transactions.
+
+## 4. Key Features
+- Centralized Dashboard for system-wide statistical overview.
+- 14 distinct management modules for handling all entity types.
+- Clean, responsive, text-only user interface without unnecessary visual clutter or icons.
+- Strict mapping of frontend forms to SQL schema fields.
+- Real-time interaction with a MySQL backend purely via JDBC.
+
+## 5. Dashboard
+The Dashboard serves as the central landing page and provides a real-time overview of the system state. It dynamically aggregates data directly from the database using SQL queries through the JDBC implementation. It presents 9 key summary statistic cards (e.g., Total Members, Societies, Village Areas, Staff Members, Funds, Cooperative Groups, Savings Accounts, Total Loans, Total Repayments) and a Quick Actions panel. It strictly avoids fake data, arbitrary activity feeds, or decorative charts.
+
+## 6. Module-wise Functionality
+The application provides full management capabilities for the following 14 modules. The fields described reflect the exact physical schema of the database.
+
+1. **Member Management**: Manages individual member profiles. (Fields: MemberID, Name, DateOfBirth, HouseNo, Street, City, State, PIN).
+2. **Cooperative Society Management**: Manages registered societies. (Fields: SocietyID, SocietyName, RegistrationDate, Street, City, State, PIN).
+3. **Village Area Management**: Manages operating regions mapped to postal codes. (Fields: VillageArea, PIN).
+4. **Staff Management**: Manages society employees and their designations. (Fields: StaffID, Name, Designation, Street, City, State, PIN).
+5. **Fund Management**: Tracks available financial funds by type. (Fields: FundID, FundType, TotalAmount).
+6. **Member Phone Management**: Handles multi-valued contact numbers for members. (Fields: MemberID, PhoneNo).
+7. **Membership Management**: Manages the many-to-many relationship between Members and Cooperative Societies. (Fields: MemberID, SocietyID, JoinDate).
+8. **Cooperative Group Management**: Manages sub-groups under specific societies. (Fields: GroupID, SocietyID, GroupName, ForwardDate, VillageArea, City, State).
+9. **Member Group Management**: Manages the roles members play within specific cooperative groups. (Fields: MemberID, GroupID, Role).
+10. **Savings Account Management**: Manages member deposit accounts and nominees. (Fields: AccountNo, MemberID, OpeningDate, AccountType, NomineeID).
+11. **Loan Management**: Manages loan issuance to members. (Fields: LoanID, MemberID, LoanType, Amount, StartDate, Tenure).
+12. **Loan Fund Management**: Tracks which funds finance which loans via a many-to-many junction. (Fields: LoanID, FundID).
+13. **Staff Phone Management**: Handles multi-valued contact numbers for staff. (Fields: StaffID, PhoneNo).
+14. **Repayment Management**: Tracks installment payments made against specific loans as a weak entity. (Fields: LoanID, RepaymentNo, PaymentDate, AmountPaid, ModeOfPayment).
+
+## 7. CRUD Operations
+Each of the 14 modules fully supports the following Create, Read, Update, and Delete operations:
+- **Create/Add**: Enter new records via structured forms matching exact database columns.
+- **Read/View**: View existing records in clean, responsive data tables.
+- **Update/Edit**: Modify existing records with pre-populated forms, protecting primary key integrity.
+- **Delete**: Remove records safely using a confirmation dialog, respecting foreign-key constraints (e.g., cascading deletes where applicable).
+
+## 8. Database Design
+The database (`cooperative_db`) is designed using normalized relational structures. It avoids redundancy and clearly separates distinct entities (Members, Staff, Funds, Societies, Loans). Multi-valued attributes like Phone Numbers are broken out into separate tables (`MEMBER_PHONE`, `STAFF_PHONE`) mapped back to their parent entities via composite primary keys.
+
+## 9. Database Relationships
+The database utilizes foreign keys to strictly map out real-world associations:
+- **Member to Society**: Many-to-Many (Resolved via `MEMBERSHIP`).
+- **Member to Group**: Many-to-Many (Resolved via `MEMBER_GROUP`).
+- **Loan to Fund**: Many-to-Many (Resolved via `LOAN_FUND`).
+- **Society to Group**: One-to-Many.
+- **Member to Loan**: One-to-Many.
+- **Loan to Repayment**: One-to-Many (Identifying relationship).
+
+## 10. Keys and Constraints
+- **Primary Keys**: Used uniquely across all main entity tables (e.g., `MemberID`, `SocietyID`, `AccountNo`).
+- **Composite Primary Keys**: Used in junction tables and multi-valued attribute tables (e.g., `(MemberID, SocietyID)` in `MEMBERSHIP`, `(LoanID, RepaymentNo)` in `REPAYMENT`).
+- **Foreign Keys**: Enforce parent-child relationships and structural dependencies.
+- **Check Constraints**: Ensure logical data validity (e.g., `TotalAmount >= 0` in `FUND`, `Amount > 0` in `LOAN`).
+
+## 11. System Architecture
+The application follows a standard three-tier architecture:
 ```text
-┌───────────────────────────────┐
-│          React Frontend       │
-│        HTML + CSS + JS        │
-└───────────────┬───────────────┘
-                │
-                │ REST API / HTTP
-                ▼
-┌───────────────────────────────┐
-│       Spring Boot Backend     │
-│             Java              │
-│                               │
-│ Controllers → DAOs → JDBC     │
-└───────────────┬───────────────┘
-                │
-                │ JDBC
-                ▼
-┌───────────────────────────────┐
-│          MySQL Database       │
-│        cooperative_db         │
-└───────────────────────────────┘
+React Frontend (Vite)
+        |
+        | HTTP REST API (JSON)
+        v
+Spring Boot Backend (Java)
+        |
+        | JDBC (Pure SQL Execution)
+        v
+MySQL Database
+```
+- **Presentation Layer (Frontend)**: Renders the UI, manages component state, and captures user input.
+- **Application Layer (Backend)**: Exposes REST controllers, handles business logic, and manages pure JDBC database access.
+- **Data Layer (Database)**: Persists and enforces constraints on relational data.
+
+## 12. Frontend
+The frontend is built using **React** and bundled with **Vite**. It features a modern, text-centric user interface leveraging functional components, React Hooks (`useState`, `useEffect`), and a responsive CSS layout (Flexbox/Grid). It strictly avoids icons, relying purely on typography and structured spacing for an academic, professional look.
+
+## 13. Backend
+The backend runs on **Java Spring Boot**, acting as a lightweight API provider. It maps HTTP requests to appropriate backend controllers. It completely avoids complex ORMs like JPA or Hibernate to maintain direct control over the SQL queries execution.
+
+## 14. Database Connectivity
+Connectivity is strictly achieved through pure **JDBC** (Java Database Connectivity). The backend establishes connections using the MySQL Connector/J driver and executes explicit SQL `SELECT`, `INSERT`, `UPDATE`, and `DELETE` queries via JDBC `PreparedStatement` interfaces.
+
+## 15. API and Backend Structure
+The backend is structured into distinct layers:
+- **Controllers**: Define REST API endpoints (e.g., `DashboardController.java`, `MemberController.java`).
+- **DAOs (Data Access Objects)**: Contain the raw JDBC SQL queries and execute the database interactions (e.g., `DashboardDao.java`, `MemberDao.java`).
+- **Models**: Simple POJOs (Plain Old Java Objects) mirroring the database rows.
+
+## 16. Validation and Data Integrity
+- **Frontend**: Forms enforce basic data types, max lengths, and required fields.
+- **Database**: The MySQL schema acts as the ultimate gatekeeper, utilizing `NOT NULL`, `CHECK` constraints, and strict foreign key definitions (`ON DELETE CASCADE`, `ON DELETE RESTRICT`) to prevent orphaned records or logical inconsistencies.
+
+## 17. Security
+- The system operates without complex user authentication or authorization tiers, matching the scope of a standard academic DBMS project.
+- **Database Credentials** are protected. They are supplied to the Spring Boot application exclusively through system environment variables (`DB_USERNAME` and `DB_PASSWORD`), preventing hardcoded secrets in the `application.properties` file. Environment-specific secrets like `.env` files are excluded through `.gitignore`.
+
+## 18. Project Structure
+The repository is logically organized into three main directories:
+```text
+backend/         # Java Spring Boot application (Controllers, DAOs, Models)
+frontend/        # React application (Components, Services, CSS)
+database/        # MySQL script (cooperative_db.sql)
+.gitignore       # Excludes node_modules, target directories, and secrets
+README.md        # Project documentation
+```
+
+## 19. Technologies Used
+- **Frontend**: React, Vite, CSS
+- **Backend**: Java 17, Spring Boot, JDBC
+- **Database**: MySQL
+
+## 20. How to Run the Project
+**Prerequisites:** Ensure MySQL is running on your system and the `cooperative_db` database is created.
+
+**1. Setup Database:**
+Execute the `database/cooperative_db.sql` script in your MySQL environment to create the tables and mock data.
+
+**2. Start Backend:**
+Configure your environment variables with your MySQL credentials, then run the Spring Boot application on port 8081. Open PowerShell and run:
+```powershell
+cd D:\cooperative\backend
+$env:DB_USERNAME="root"
+$env:DB_PASSWORD="YOUR_MYSQL_PASSWORD"
+mvn spring-boot:run
+```
+
+**3. Start Frontend:**
+Install dependencies and run the Vite server on port 5173. Open a new PowerShell window and run:
+```powershell
+cd D:\cooperative\frontend
+npm.cmd install
+npm.cmd run dev
+```
+
+**4. Access Application:**
+- Frontend Interface: http://localhost:5173
+- Backend API Base: http://localhost:8081
+
+## 21. Application Workflow
+Users navigate via the text-based sidebar. Selecting a module fetches existing records via an API `GET` request. Users can toggle the "Add Record" form to `POST` new entries. Clicking `[Edit]` populates the form for `PUT` updates, and `[Delete]` triggers a `DELETE` request upon confirmation.
+
+## 22. Testing
+The application underwent manual functional testing. CRUD operations were successfully executed across all 14 modules, including add, view, edit, and delete operations, with special attention to preserving foreign-key dependencies and composite-key records.
+
+## 23. Error Handling
+The React components implement robust frontend error handling. Network failures, API errors, or database constraint violations are caught and displayed as plain text alerts (e.g., "Unable to load records."). The backend correctly relays SQL exceptions back to the client.
+
+## 24. Dashboard Functionality
+The dashboard provides an immediate, unembellished, at-a-glance view of system scale, querying the total counts of members, societies, areas, staff, funds, groups, accounts, loans, and repayments via an aggregate JDBC query.
+
+## 25. Many-to-Many Relationships
+Implemented using dedicated junction tables with composite primary keys:
+- `MEMBERSHIP` (Members <-> Societies)
+- `MEMBER_GROUP` (Members <-> Groups)
+- `LOAN_FUND` (Loans <-> Funds)
+
+## 26. One-to-Many Relationships
+Implemented by placing the parent's primary key as a foreign key in the child table:
+- `MEMBER` to `SAVINGS_ACCOUNT` (1 Member has many Accounts).
+- `COOPERATIVE_SOCIETY` to `COOPERATIVE_GROUP` (1 Society manages many Groups).
+
+## 27. Referential Integrity
+Referential integrity is guaranteed by InnoDB foreign keys. Behaviors like `ON DELETE CASCADE` ensure that deleting a member automatically removes their associated multi-valued phones and group associations, while `ON DELETE RESTRICT` prevents the deletion of a member if they hold an active loan.
+
+## 28. Key Database Features
+- **Normalized Schema**: Eliminates redundant data storage.
+- **Weak Entities**: `REPAYMENT` cannot exist without a corresponding `LOAN`.
+- **Domain Constraints**: Validates logical boundaries (e.g., ensuring negative loan amounts cannot be inserted).
+
+## 29. Project Highlights
+- **Zero ORM Overhead**: Uncompromised learning of database interaction using pure JDBC.
+- **Academic Purity**: Adherence to formal DBMS principles without reliance on distracting visual icon libraries.
+- **Robust Architecture**: Clear separation of concerns between database, backend APIs, and frontend state.
+
+## 30. Future Enhancements
+- Integration of a dedicated user authentication and role-based access control system.
+- Expansion of JDBC queries to support advanced filtering, searching, and pagination.
+- Implementation of automated transaction rollbacks in complex multi-table inserts.
+
+## 31. Academic Relevance
+This project serves as a comprehensive demonstration of DBMS concepts, including ER modeling, normalization, DDL/DML script writing, referential integrity, and full-stack integration utilizing standard web technologies.
+
+## 32. Database Script
+The foundational SQL script (`cooperative_db.sql`) is included in the `database/` directory. It contains all table definitions, keys, constraints, and mock seed data required to fully instantiate the application's testing environment.
+
+## 33. Project Type
+Academic Database Management System (DBMS) Project
+
+## 34. License
+This project is intended for educational and academic purposes.
