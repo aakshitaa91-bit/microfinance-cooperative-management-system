@@ -34,6 +34,8 @@ html, body, #root {
   color: #fff;
   border-bottom: 1px solid #2d3748;
   line-height: 1.4;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .sidebar-nav {

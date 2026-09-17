@@ -41,7 +41,7 @@ function App() {
     <div className="app-container">
       <aside className="sidebar">
         <div className="sidebar-header">
-          Microfinance & Cooperative Society
+          Microfinance and Cooperative Society Management System
         </div>
         <nav className="sidebar-nav">
           {navItems.map(item => (
