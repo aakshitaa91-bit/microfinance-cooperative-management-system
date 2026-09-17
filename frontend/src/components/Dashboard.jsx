@@ -12,7 +12,7 @@ const Dashboard = ({ setActiveTab }) => {
                 const data = await fetchDashboardSummary();
                 setSummary(data);
             } catch (err) {
-                setError('Failed to load dashboard data. Please check backend connection.');
+                setError('Unable to load dashboard data.');
             } finally {
                 setLoading(false);
             }
@@ -20,88 +20,84 @@ const Dashboard = ({ setActiveTab }) => {
         loadSummary();
     }, []);
 
-    const cardStyle = {
-        background: '#fff',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        padding: '20px',
-        textAlign: 'center',
-        flex: '1 1 200px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    };
+    if (loading) return <div className="status-message">Loading dashboard...</div>;
+    if (error) return <div className="error-message">{error}</div>;
 
-    const numStyle = {
-        fontSize: '2rem',
-        fontWeight: 'bold',
-        color: '#4da6ff',
-        margin: '10px 0 0 0'
-    };
-
-    const actionBtnStyle = {
-        padding: '12px 20px',
-        background: '#28a745',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '1rem',
-        flex: '1 1 150px'
-    };
-
-    if (loading) return <div>Loading dashboard...</div>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    const isZeroData = summary && 
+        summary.totalMembers === 0 && 
+        summary.totalSocieties === 0 && 
+        summary.totalVillageAreas === 0 && 
+        summary.totalStaff === 0 && 
+        summary.totalFunds === 0 && 
+        summary.totalGroups === 0 && 
+        summary.totalSavingsAccounts === 0 && 
+        summary.totalLoans === 0 && 
+        summary.totalRepayments === 0;
 
     return (
-        <div>
-            <h2 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>Dashboard Overview</h2>
+        <div className="dashboard-container">
+            <h1 className="dashboard-heading">Dashboard</h1>
+            <p className="dashboard-subheading">Overview of the Microfinance and Cooperative Society Management System</p>
             
-            <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Total Members</div>
-                    <div style={numStyle}>{summary.totalMembers}</div>
+            {isZeroData ? (
+                <div className="status-message">No records available.</div>
+            ) : (
+                <div className="dashboard-grid">
+                    <div className="dashboard-card">
+                        <div className="card-title">Total Members</div>
+                        <div className="card-number">{summary.totalMembers}</div>
+                        <p className="card-desc">Registered members</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Societies</div>
+                        <div className="card-number">{summary.totalSocieties}</div>
+                        <p className="card-desc">Active cooperative societies</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Village Areas</div>
+                        <div className="card-number">{summary.totalVillageAreas}</div>
+                        <p className="card-desc">Operating village areas</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Staff Members</div>
+                        <div className="card-number">{summary.totalStaff}</div>
+                        <p className="card-desc">Employed staff members</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Funds</div>
+                        <div className="card-number">{summary.totalFunds}</div>
+                        <p className="card-desc">Total managed funds</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Cooperative Groups</div>
+                        <div className="card-number">{summary.totalGroups}</div>
+                        <p className="card-desc">Active cooperative groups</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Savings Accounts</div>
+                        <div className="card-number">{summary.totalSavingsAccounts}</div>
+                        <p className="card-desc">Member savings accounts</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Total Loans</div>
+                        <div className="card-number">{summary.totalLoans}</div>
+                        <p className="card-desc">Issued loans</p>
+                    </div>
+                    <div className="dashboard-card">
+                        <div className="card-title">Total Repayments</div>
+                        <div className="card-number">{summary.totalRepayments}</div>
+                        <p className="card-desc">Recorded repayments</p>
+                    </div>
                 </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Societies</div>
-                    <div style={numStyle}>{summary.totalSocieties}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Village Areas</div>
-                    <div style={numStyle}>{summary.totalVillageAreas}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Staff Members</div>
-                    <div style={numStyle}>{summary.totalStaff}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Funds</div>
-                    <div style={numStyle}>{summary.totalFunds}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Cooperative Groups</div>
-                    <div style={numStyle}>{summary.totalGroups}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Savings Accounts</div>
-                    <div style={numStyle}>{summary.totalSavingsAccounts}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Total Loans</div>
-                    <div style={numStyle}>{summary.totalLoans}</div>
-                </div>
-                <div style={cardStyle}>
-                    <div style={{ color: '#666', textTransform: 'uppercase', fontSize: '0.9rem' }}>Total Repayments</div>
-                    <div style={numStyle}>{summary.totalRepayments}</div>
-                </div>
-            </div>
+            )}
 
-            <h3 style={{ borderBottom: '2px solid #eee', paddingBottom: '10px' }}>Quick Actions</h3>
-            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('members')}>+ Add Member</button>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('societies')}>+ Add Society</button>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('staff')}>+ Add Staff</button>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('funds')}>+ Add Fund</button>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('savings')}>+ Add Savings Account</button>
-                <button style={actionBtnStyle} onClick={() => setActiveTab('loans')}>+ Add Loan</button>
+            <div className="section-title">Quick Actions</div>
+            <div className="quick-actions-grid">
+                <button className="quick-action-btn" onClick={() => setActiveTab('members')}>Add Member</button>
+                <button className="quick-action-btn" onClick={() => setActiveTab('societies')}>Add Society</button>
+                <button className="quick-action-btn" onClick={() => setActiveTab('staff')}>Add Staff</button>
+                <button className="quick-action-btn" onClick={() => setActiveTab('funds')}>Add Fund</button>
+                <button className="quick-action-btn" onClick={() => setActiveTab('loans')}>Add Loan</button>
             </div>
         </div>
     );

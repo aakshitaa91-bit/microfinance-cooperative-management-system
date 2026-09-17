@@ -5,6 +5,8 @@ const CooperativeGroupManagement = () => {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showForm, setShowForm] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
     const [success, setSuccess] = useState(null);
     const [editingRecord, setEditingRecord] = useState(null);
     const [fkCooperativeSocietys, setFkCooperativeSocietys] = useState([]);
@@ -20,7 +22,7 @@ const CooperativeGroupManagement = () => {
             setFkCooperativeSocietys(await fetchCooperativeSocietys());
             setFkVillageAreas(await fetchVillageAreas());
         } catch (err) {
-            setError(err.message || 'Failed to load data');
+            setError('Unable to load records.');
         } finally {
             setLoading(false);
         }
@@ -31,6 +33,7 @@ const CooperativeGroupManagement = () => {
     const handleChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); };
 
     const handleEdit = (record) => {
+        setShowForm(true);
         setEditingRecord(record);
         setFormData({
             groupId: record.groupId !== null && record.groupId !== undefined ? record.groupId : '',
@@ -45,6 +48,7 @@ const CooperativeGroupManagement = () => {
     };
 
     const handleCancelEdit = () => {
+        setShowForm(false);
         setEditingRecord(null);
         setFormData({ groupId: '', societyId: '', groupName: '', forwardDate: '', villageArea: '', city: '', state: '' });
     };
@@ -74,6 +78,7 @@ const CooperativeGroupManagement = () => {
                 setSuccess('CooperativeGroup added successfully!');
             }
             handleCancelEdit();
+            setShowForm(false);
             await loadData();
         } catch (err) {
             setError(err.message || 'Failed to save');
@@ -82,8 +87,13 @@ const CooperativeGroupManagement = () => {
         }
     };
 
-    const handleDelete = async (record) => {
-        if (!window.confirm('Are you sure you want to delete this record?')) return;
+    const confirmDelete = (record) => {
+        setRecordToDelete(record);
+    };
+
+    const handleDelete = async () => {
+        if (!recordToDelete) return;
+        const record = recordToDelete;
         setError(null);
         setSuccess(null);
         setLoading(true);
@@ -99,20 +109,30 @@ const CooperativeGroupManagement = () => {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-            <h2>Cooperative Group Management</h2>
-            {error && <div style={{ color: 'red', marginBottom: '10px', padding: '10px', border: '1px solid red', backgroundColor: '#ffe6e6' }}>{error}</div>}
-            {success && <div style={{ color: 'green', marginBottom: '10px', padding: '10px', border: '1px solid green', backgroundColor: '#e6ffe6' }}>{success}</div>}
-            <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
+        <div className="module-container">
+            <div className="module-header">
+                <div className="module-title-section">
+                    <h2>Cooperative Group Management</h2>
+                    <p>Manage registered cooperative groups and their information.</p>
+                </div>
+                <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
+                    {showForm ? 'Close Form' : 'Add Cooperative Group'}
+                </button>
+            </div>
+            {error && <div className="error-message">{error}</div>}
+            {success && <div className="success-message">{success}</div>}
+            {showForm && (
+            <div className="form-container">
+                <form onSubmit={handleSubmit}>
                 <h3>{editingRecord ? 'Edit Record' : 'Add New Record'}</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div>
-                        <label>Group ID:</label><br/>
-                        <input type="number" step="1" name="groupId" value={formData.groupId} onChange={handleChange} required disabled={editingRecord !== null} style={{width: '100%'}}/>
+                <div className="form-grid">
+                    <div className="form-group">
+                        <label className="form-label">Group ID:</label>
+                        <input type="number" step="1" name="groupId" value={formData.groupId} onChange={handleChange} required disabled={editingRecord !== null} className="form-input" />
                     </div>
-                    <div>
-                        <label>Society:</label><br/>
-                        <select name="societyId" value={formData.societyId} onChange={handleChange} required style={{width: '100%'}}>
+                    <div className="form-group">
+                        <label className="form-label">Society:</label>
+                        <select name="societyId" value={formData.societyId} onChange={handleChange} required className="form-select" >
                             <option value="">-- Select Society --</option>
                             {fkCooperativeSocietys.map(fk => (
                                 <option key={fk.societyId} value={fk.societyId}>
@@ -121,17 +141,17 @@ const CooperativeGroupManagement = () => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label>Group Name:</label><br/>
-                        <input type="text" name="groupName" value={formData.groupName} onChange={handleChange}  style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">Group Name:</label>
+                        <input type="text" name="groupName" value={formData.groupName} onChange={handleChange}  className="form-input" />
                     </div>
-                    <div>
-                        <label>Forward Date:</label><br/>
-                        <input type="date" name="forwardDate" value={formData.forwardDate} onChange={handleChange}  style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">Forward Date:</label>
+                        <input type="date" name="forwardDate" value={formData.forwardDate} onChange={handleChange}  className="form-input" />
                     </div>
-                    <div>
-                        <label>Village Area:</label><br/>
-                        <select name="villageArea" value={formData.villageArea} onChange={handleChange} required style={{width: '100%'}}>
+                    <div className="form-group">
+                        <label className="form-label">Village Area:</label>
+                        <select name="villageArea" value={formData.villageArea} onChange={handleChange} required className="form-select" >
                             <option value="">-- Select Village Area --</option>
                             {fkVillageAreas.map(fk => (
                                 <option key={fk.villageArea} value={fk.villageArea}>
@@ -140,37 +160,40 @@ const CooperativeGroupManagement = () => {
                             ))}
                         </select>
                     </div>
-                    <div>
-                        <label>City:</label><br/>
-                        <input type="text" name="city" value={formData.city} onChange={handleChange}  style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">City:</label>
+                        <input type="text" name="city" value={formData.city} onChange={handleChange}  className="form-input" />
                     </div>
-                    <div>
-                        <label>State:</label><br/>
-                        <input type="text" name="state" value={formData.state} onChange={handleChange}  style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">State:</label>
+                        <input type="text" name="state" value={formData.state} onChange={handleChange}  className="form-input" />
                     </div>
                 </div>
-                <div style={{ marginTop: '15px' }}>
-                    <button type="submit" disabled={loading} style={{ marginRight: '10px' }}>{loading ? 'Saving...' : (editingRecord ? 'Update' : 'Add')}</button>
-                    {editingRecord && <button type="button" onClick={handleCancelEdit} disabled={loading}>Cancel</button>}
+                <div className="form-actions">
+                    {editingRecord ? <button type="button" className="btn-secondary" onClick={handleCancelEdit} disabled={loading}>Cancel</button> : null}
+                    <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Saving...' : (editingRecord ? 'Update' : 'Add')}</button>
                 </div>
-            </form>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>Existing Records</h3>
-                <button onClick={loadData} disabled={loading}>Refresh</button>
+                           </form>
             </div>
-            {loading && !records.length ? <p>Loading...</p> : (
-                <div style={{overflowX: 'auto'}}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }} border="1">
+        )}
+            <div className="module-header" style={{ marginTop: '30px', borderBottom: 'none' }}>
+                <h3 className="section-title" style={{ margin: 0 }}>Existing Cooperative Groups</h3>
+                <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>Refresh</button>
+            </div>
+            {loading && !records.length ? <div className="status-message">Loading cooperative groups...</div> : (
+                <div className="table-wrapper">
+                <div className="table-container">
+                <table className="data-table">
                     <thead>
-                        <tr style={{ backgroundColor: '#f2f2f2' }}>
-                            <th style={{ padding: '8px' }}>Group ID</th>
-                            <th style={{ padding: '8px' }}>Society</th>
-                            <th style={{ padding: '8px' }}>Group Name</th>
-                            <th style={{ padding: '8px' }}>Forward Date</th>
-                            <th style={{ padding: '8px' }}>Village Area</th>
-                            <th style={{ padding: '8px' }}>City</th>
-                            <th style={{ padding: '8px' }}>State</th>
-                            <th style={{ padding: '8px' }}>Actions</th>
+                        <tr>
+                            <th >Group ID</th>
+                            <th >Society</th>
+                            <th >Group Name</th>
+                            <th >Forward Date</th>
+                            <th >Village Area</th>
+                            <th >City</th>
+                            <th >State</th>
+                            <th >Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -178,21 +201,37 @@ const CooperativeGroupManagement = () => {
                             <tr><td colSpan="8" style={{ textAlign: 'center', padding: '10px' }}>No records found.</td></tr>
                         ) : records.map((r, idx) => (
                             <tr key={idx}>
-                                <td style={{ padding: '8px' }}>{r.groupId}</td>
-                                <td style={{ padding: '8px' }}>{r.societyId}</td>
-                                <td style={{ padding: '8px' }}>{r.groupName}</td>
-                                <td style={{ padding: '8px' }}>{r.forwardDate}</td>
-                                <td style={{ padding: '8px' }}>{r.villageArea}</td>
-                                <td style={{ padding: '8px' }}>{r.city}</td>
-                                <td style={{ padding: '8px' }}>{r.state}</td>
-                                <td style={{ padding: '8px' }}>
-                                    <button onClick={() => handleEdit(r)} style={{ marginRight: '5px' }}>Edit</button>
-                                    <button onClick={() => handleDelete(r)} style={{ color: 'red' }}>Delete</button>
+                                <td >{r.groupId}</td>
+                                <td >{r.societyId}</td>
+                                <td >{r.groupName}</td>
+                                <td >{r.forwardDate}</td>
+                                <td >{r.villageArea}</td>
+                                <td >{r.city}</td>
+                                <td >{r.state}</td>
+                                <td>
+                                    <div className="action-buttons">
+                                        <button className="btn-text-edit" onClick={() => handleEdit(r)}>[Edit]</button>
+                                        <button className="btn-text-delete" onClick={() => confirmDelete(r)}>[Delete]</button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                </div>
+                </div>
+            )}
+        
+            {recordToDelete && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this record?</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setRecordToDelete(null)}>Cancel</button>
+                            <button className="btn-danger" onClick={() => { handleDelete(); setRecordToDelete(null); }}>Delete</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>

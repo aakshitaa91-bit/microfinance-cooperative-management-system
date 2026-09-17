@@ -5,6 +5,8 @@ const MemberManagement = () => {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showForm, setShowForm] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
     const [success, setSuccess] = useState(null);
     const [editingMember, setEditingMember] = useState(null);
 
@@ -26,7 +28,7 @@ const MemberManagement = () => {
             const data = await fetchMembers();
             setMembers(data);
         } catch (err) {
-            setError(err.message || 'Failed to load members');
+            setError('Unable to load records.');
         } finally {
             setLoading(false);
         }
@@ -41,6 +43,7 @@ const MemberManagement = () => {
     };
 
     const handleEdit = (member) => {
+        setShowForm(true);
         setEditingMember(member.memberId);
         setFormData({
             memberId: member.memberId || '',
@@ -56,6 +59,7 @@ const MemberManagement = () => {
     };
 
     const handleCancelEdit = () => {
+        setShowForm(false);
         setEditingMember(null);
         setFormData({
             memberId: '', name: '', dateOfBirth: '', houseNo: '', street: '', city: '', state: '', pin: ''
@@ -88,6 +92,7 @@ const MemberManagement = () => {
                 setSuccess('Member added successfully!');
             }
             handleCancelEdit();
+            setShowForm(false);
             await loadMembers();
         } catch (err) {
             setError(err.message || 'Failed to save member');
@@ -96,8 +101,13 @@ const MemberManagement = () => {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this member?')) return;
+    const confirmDelete = (id) => {
+        setRecordToDelete(id);
+    };
+
+    const handleDelete = async () => {
+        if (!recordToDelete) return;
+        const id = recordToDelete;
         setError(null);
         setSuccess(null);
         setLoading(true);
@@ -113,101 +123,132 @@ const MemberManagement = () => {
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-            <h2>Member Management</h2>
+        <div className="module-container">
+            <div className="module-header">
+                <div className="module-title-section">
+                    <h2>Member Management</h2>
+                    <p>Manage registered members and their information.</p>
+                </div>
+                <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
+                    {showForm ? 'Close Form' : 'Add Member'}
+                </button>
+            </div>
 
-            {error && <div style={{ color: 'red', marginBottom: '10px', padding: '10px', border: '1px solid red', backgroundColor: '#ffe6e6' }}>{error}</div>}
-            {success && <div style={{ color: 'green', marginBottom: '10px', padding: '10px', border: '1px solid green', backgroundColor: '#e6ffe6' }}>{success}</div>}
+            {error && <div className="error-message">{error}</div>}
+            {success && <div className="success-message">{success}</div>}
             
-            <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
+            {showForm && (
+            <div className="form-container">
+                <form onSubmit={handleSubmit}>
                 <h3>{editingMember ? 'Edit Member' : 'Add New Member'}</h3>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div>
-                        <label>Member ID (Integer):</label><br/>
-                        <input type="number" name="memberId" value={formData.memberId} onChange={handleChange} required disabled={editingMember !== null} style={{width: '100%'}}/>
+                <div className="form-grid">
+                    <div className="form-group">
+                        <label className="form-label">Member ID (Integer):</label>
+                        <input type="number" name="memberId" value={formData.memberId} onChange={handleChange} required disabled={editingMember !== null} className="form-input" />
                     </div>
-                    <div>
-                        <label>Name:</label><br/>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} required maxLength="100" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">Name:</label>
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required maxLength="100" className="form-input" />
                     </div>
-                    <div>
-                        <label>Date of Birth:</label><br/>
-                        <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">Date of Birth:</label>
+                        <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="form-input" />
                     </div>
-                    <div>
-                        <label>House No:</label><br/>
-                        <input type="text" name="houseNo" value={formData.houseNo} onChange={handleChange} maxLength="20" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">House No:</label>
+                        <input type="text" name="houseNo" value={formData.houseNo} onChange={handleChange} maxLength="20" className="form-input" />
                     </div>
-                    <div>
-                        <label>Street:</label><br/>
-                        <input type="text" name="street" value={formData.street} onChange={handleChange} maxLength="100" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">Street:</label>
+                        <input type="text" name="street" value={formData.street} onChange={handleChange} maxLength="100" className="form-input" />
                     </div>
-                    <div>
-                        <label>City:</label><br/>
-                        <input type="text" name="city" value={formData.city} onChange={handleChange} maxLength="50" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">City:</label>
+                        <input type="text" name="city" value={formData.city} onChange={handleChange} maxLength="50" className="form-input" />
                     </div>
-                    <div>
-                        <label>State:</label><br/>
-                        <input type="text" name="state" value={formData.state} onChange={handleChange} maxLength="50" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">State:</label>
+                        <input type="text" name="state" value={formData.state} onChange={handleChange} maxLength="50" className="form-input" />
                     </div>
-                    <div>
-                        <label>PIN:</label><br/>
-                        <input type="text" name="pin" value={formData.pin} onChange={handleChange} maxLength="10" style={{width: '100%'}}/>
+                    <div className="form-group">
+                        <label className="form-label">PIN:</label>
+                        <input type="text" name="pin" value={formData.pin} onChange={handleChange} maxLength="10" className="form-input" />
                     </div>
                 </div>
 
-                <div style={{ marginTop: '15px' }}>
-                    <button type="submit" disabled={loading} style={{ marginRight: '10px' }}>
+                <div className="form-actions">
+                    <button type="submit" className="btn-primary" disabled={loading}>
                         {loading ? 'Saving...' : (editingMember ? 'Update Member' : 'Add Member')}
                     </button>
                     {editingMember && (
-                        <button type="button" onClick={handleCancelEdit} disabled={loading}>Cancel</button>
+                        <button type="button" className="btn-secondary" onClick={handleCancelEdit} disabled={loading}>Cancel</button>
                     )}
                 </div>
-            </form>
+                           </form>
+            </div>
+        )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>Existing Members</h3>
-                <button onClick={loadMembers} disabled={loading}>Refresh</button>
+            <div className="module-header" style={{ marginTop: '30px', borderBottom: 'none' }}>
+                <h3 className="section-title" style={{ margin: 0 }}>Existing Members</h3>
+                <button className="btn-secondary" onClick={() => { loadMembers() }} disabled={loading}>Refresh</button>
             </div>
 
-            {loading && !members.length ? <p>Loading...</p> : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }} border="1">
+            {loading && !members.length ? <div className="status-message">Loading records...</div> : (
+                <div className="table-wrapper">
+                <div className="table-container">
+                <table className="data-table">
                     <thead>
-                        <tr style={{ backgroundColor: '#f2f2f2' }}>
-                            <th style={{ padding: '8px' }}>ID</th>
-                            <th style={{ padding: '8px' }}>Name</th>
-                            <th style={{ padding: '8px' }}>DOB</th>
-                            <th style={{ padding: '8px' }}>House No</th>
-                            <th style={{ padding: '8px' }}>Street</th>
-                            <th style={{ padding: '8px' }}>City</th>
-                            <th style={{ padding: '8px' }}>State</th>
-                            <th style={{ padding: '8px' }}>PIN</th>
-                            <th style={{ padding: '8px' }}>Actions</th>
+                        <tr>
+                            <th >ID</th>
+                            <th >Name</th>
+                            <th >DOB</th>
+                            <th >House No</th>
+                            <th >Street</th>
+                            <th >City</th>
+                            <th >State</th>
+                            <th >PIN</th>
+                            <th >Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {members.length === 0 ? (
-                            <tr><td colSpan="9" style={{ textAlign: 'center', padding: '10px' }}>No members found.</td></tr>
+                            <tr><td colSpan="9" style={{ textAlign: 'center', padding: '10px' }}>No records found.</td></tr>
                         ) : members.map(m => (
                             <tr key={m.memberId}>
-                                <td style={{ padding: '8px' }}>{m.memberId}</td>
-                                <td style={{ padding: '8px' }}>{m.name}</td>
-                                <td style={{ padding: '8px' }}>{m.dateOfBirth}</td>
-                                <td style={{ padding: '8px' }}>{m.houseNo}</td>
-                                <td style={{ padding: '8px' }}>{m.street}</td>
-                                <td style={{ padding: '8px' }}>{m.city}</td>
-                                <td style={{ padding: '8px' }}>{m.state}</td>
-                                <td style={{ padding: '8px' }}>{m.pin}</td>
-                                <td style={{ padding: '8px' }}>
-                                    <button onClick={() => handleEdit(m)} style={{ marginRight: '5px' }}>Edit</button>
-                                    <button onClick={() => handleDelete(m.memberId)} style={{ color: 'red' }}>Delete</button>
+                                <td >{m.memberId}</td>
+                                <td >{m.name}</td>
+                                <td >{m.dateOfBirth}</td>
+                                <td >{m.houseNo}</td>
+                                <td >{m.street}</td>
+                                <td >{m.city}</td>
+                                <td >{m.state}</td>
+                                <td >{m.pin}</td>
+                                <td>
+                                    <div className="action-buttons">
+                                        <button className="btn-text-edit" onClick={() => handleEdit(m)}>[Edit]</button>
+                                        <button className="btn-text-delete" onClick={() => confirmDelete(m.memberId)}>[Delete]</button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                </div>
+                </div>
+            )}
+        
+            {recordToDelete && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Confirm Deletion</h3>
+                        <p>Are you sure you want to delete this record?</p>
+                        <div className="modal-actions">
+                            <button className="btn-secondary" onClick={() => setRecordToDelete(null)}>Cancel</button>
+                            <button className="btn-danger" onClick={() => { handleDelete(); setRecordToDelete(null); }}>Delete</button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
