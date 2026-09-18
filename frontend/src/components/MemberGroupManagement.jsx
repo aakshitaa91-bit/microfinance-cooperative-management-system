@@ -4,6 +4,7 @@ import { fetchMemberGroups, createMemberGroup, updateMemberGroup, deleteMemberGr
 const MemberGroupManagement = () => {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [lastRefreshed, setLastRefreshed] = useState(null);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
@@ -19,6 +20,7 @@ const MemberGroupManagement = () => {
         try {
             const data = await fetchMemberGroups();
             setRecords(data);
+            setLastRefreshed(new Date().toLocaleTimeString());
             setFkMembers(await fetchMembers());
             setFkCooperativeGroups(await fetchCooperativeGroups());
         } catch (err) {
@@ -154,7 +156,10 @@ const MemberGroupManagement = () => {
         )}
             <div className="module-header" style={{ marginTop: '30px', borderBottom: 'none' }}>
                 <h3 className="section-title" style={{ margin: 0 }}>Existing Member Groups</h3>
-                <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>Refresh</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {lastRefreshed && <span style={{ fontSize: '0.85em', color: '#666' }}>Last refreshed: {lastRefreshed}</span>}
+                    <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>{loading ? 'Refreshing...' : 'Refresh'}</button>
+                </div>
             </div>
             {loading && !records.length ? <div className="status-message">Loading member groups...</div> : (
                 <div className="table-wrapper">

@@ -4,6 +4,7 @@ import { fetchMemberPhones, createMemberPhone, updateMemberPhone, deleteMemberPh
 const MemberPhoneManagement = () => {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [lastRefreshed, setLastRefreshed] = useState(null);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
@@ -18,6 +19,7 @@ const MemberPhoneManagement = () => {
         try {
             const data = await fetchMemberPhones();
             setRecords(data);
+            setLastRefreshed(new Date().toLocaleTimeString());
             setFkMembers(await fetchMembers());
         } catch (err) {
             setError('Unable to load records.');
@@ -139,7 +141,10 @@ const MemberPhoneManagement = () => {
         )}
             <div className="module-header" style={{ marginTop: '30px', borderBottom: 'none' }}>
                 <h3 className="section-title" style={{ margin: 0 }}>Existing Member Phones</h3>
-                <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>Refresh</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {lastRefreshed && <span style={{ fontSize: '0.85em', color: '#666' }}>Last refreshed: {lastRefreshed}</span>}
+                    <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>{loading ? 'Refreshing...' : 'Refresh'}</button>
+                </div>
             </div>
             {loading && !records.length ? <div className="status-message">Loading member phones...</div> : (
                 <div className="table-wrapper">

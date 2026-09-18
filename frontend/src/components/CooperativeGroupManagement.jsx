@@ -4,6 +4,7 @@ import { fetchCooperativeGroups, createCooperativeGroup, updateCooperativeGroup,
 const CooperativeGroupManagement = () => {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [lastRefreshed, setLastRefreshed] = useState(null);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
@@ -19,6 +20,7 @@ const CooperativeGroupManagement = () => {
         try {
             const data = await fetchCooperativeGroups();
             setRecords(data);
+            setLastRefreshed(new Date().toLocaleTimeString());
             setFkCooperativeSocietys(await fetchCooperativeSocietys());
             setFkVillageAreas(await fetchVillageAreas());
         } catch (err) {
@@ -178,7 +180,10 @@ const CooperativeGroupManagement = () => {
         )}
             <div className="module-header" style={{ marginTop: '30px', borderBottom: 'none' }}>
                 <h3 className="section-title" style={{ margin: 0 }}>Existing Cooperative Groups</h3>
-                <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>Refresh</button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {lastRefreshed && <span style={{ fontSize: '0.85em', color: '#666' }}>Last refreshed: {lastRefreshed}</span>}
+                    <button className="btn-secondary" onClick={() => { loadData() }} disabled={loading}>{loading ? 'Refreshing...' : 'Refresh'}</button>
+                </div>
             </div>
             {loading && !records.length ? <div className="status-message">Loading cooperative groups...</div> : (
                 <div className="table-wrapper">
