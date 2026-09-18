@@ -41,8 +41,7 @@ A comprehensive, full-stack relational database management system (DBMS) designe
 28. [Error Handling](#28-error-handling)
 29. [Future Enhancements](#29-future-enhancements)
 30. [Academic Purpose](#30-academic-purpose)
-31. [Screenshots](#31-screenshots)
-32. [License](#32-license)
+31. [License](#31-license)
 
 ## 1. Project Overview
 This project solves the problem of manual data entry and disjointed record-keeping in a cooperative society. It systematically manages interrelated entities such as members, cooperative groups, funds, loans, and repayments. The React frontend captures user inputs, passes them to a Java Spring Boot REST API, which executes pure JDBC statements against a highly normalized MySQL database.
@@ -269,8 +268,5 @@ The React application gracefully handles rejected network requests. If a databas
 ## 30. Academic Purpose
 This project is a pristine demonstration of core relational database management concepts. It proves practical understanding of Entity-Relationship modeling, normalization, composite keys, referential integrity mapping, and the implementation of complete DDL/DML cycles via JDBC and a modern web frontend.
 
-## 31. Screenshots
-*(Placeholder: Add application screenshots here showing the Dashboard and Data Grids)*
-
-## 32. License
+## 31. License
 This project is intended exclusively for educational and academic purposes.
