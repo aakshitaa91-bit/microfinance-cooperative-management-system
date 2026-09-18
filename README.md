@@ -8,7 +8,7 @@ A comprehensive, full-stack relational database management system (DBMS) designe
 |------|-------------|---------------------|
 | Frontend Development | Karthikeyan Saravana | 25BCE1675 |
 | Backend Development | Hitesh J Shenoy | 25BCE1603 |
-| Backend and Frontend Connection | Akshita Agrawal | 25BCE1589 |
+| Backend and Frontend Connection & Database | Akshita Agrawal | 25BCE1589 |
 
 ## Table of Contents
 1. [Project Overview](#1-project-overview)
